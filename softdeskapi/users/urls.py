@@ -1,13 +1,17 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .views import UserViewSet, CreateUserAPIView, CustomTokenObtainPairView
+
+from .views import CreateUserAPIView, CustomTokenObtainPairView, UserViewSet
 
 # Initialise DefaultRouter pour les vues basées sur UserViewSet
 router = DefaultRouter()
-router.register(r'', UserViewSet, basename='user')  # Base URL "/users/"
+router.register(r"", UserViewSet, basename="user")  # Base URL "/users/"
 
 urlpatterns = [
-    path('register/', CreateUserAPIView.as_view(), name='register'),  # Endpoint pour l'inscription
-    path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),  # authentification JWT
-    path('', include(router.urls)),  # Inclut les routes générées par DefaultRouter
+    # Endpoint pour l'inscription
+    path("register/", CreateUserAPIView.as_view(), name="register"),
+    # authentification JWT
+    path("login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    # Inclut les routes générées par DefaultRouter
+    path("", include(router.urls)),
 ]

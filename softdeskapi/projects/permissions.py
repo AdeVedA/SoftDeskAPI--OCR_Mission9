@@ -9,7 +9,7 @@ class IsAuthorOrReadOnly(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         # Permissions de lecture sont autorisées pour tous
-        if request.method in ['GET', 'HEAD', 'OPTIONS']:
+        if request.method in ["GET", "HEAD", "OPTIONS"]:
             return True
 
         # Seul l'auteur peut modifier ou supprimer
