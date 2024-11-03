@@ -29,7 +29,38 @@ Pagination des ressources
 Optimisation des requêtes (Green Code)
 
 Points de terminaison de l'API :
+| Fonction                                  | Endpoint                                      | Verbe HTTP   |
+ |-------------------------------------------|-----------------------------------------------|--------------|
+ | App users                                |                                               |              |
+ | Inscription                              | `users/register/`                             | POST         |
+ | Authentification (JWT)                   | `users/login/`                                | POST         |
+ | Liste des utilisateurs                    | `/users/`                                     | GET          |
+ | Détail de l'utilisateur (self)           | `/users/<id>/`                                | GET          |
+ | Mise à jour des informations              | `/users/<id>/`                                | PUT ou PATCH |
+ | Suppression du compte utilisateur         | `/users/<id>/`                                | DELETE       |
+ | Contact email (conditionnel)              | `/users/<id>/contact_info/`                   | GET          |
+ | App projects                              |                                               |              |
+ | Création d'un projet                      | `/projects/`                                  | POST         |
+ | Liste des projets                         | `/projects/`                                  | GET          |
+ | Détail d'un projet                        | `/projects/<id>/`                             | GET          |
+ | Mise à jour d'un projet                   | `/projects/<id>/`                             | PUT ou PATCH |
+ | Suppression d'un projet                    | `/projects/<id>/`                             | DELETE       |
+ | Liste des contributeurs d'un projet       | `/projects/<id>/contributors/`                | GET          |
+ | Ajout d'un contributeur à un projet       | `/projects/<id>/contributors/`                | POST         |
+ | Détails d’un contributeur à un projet    | `/projects/<id>/contributors/<id>/`           | GET          |
+ | Suppression d'un contributeur            | `/projects/<id>/contributors/<id>/`           | DELETE       |
+ | Liste des issues d'un projet              | `/projects/<id>/issues/`                      | GET          |
+ | Création d'une issue                      | `/projects/<id>/issues/`                     | POST         |
+ | Détail d'une issue                        | `/projects/<id>/issues/<id>/`                 | GET          |
+ | Mise à jour d'une issue                   | `/projects/<id>/issues/<id>/`                 | PUT ou PATCH |
+ | Suppression d'une issue                   | `/projects/<id>/issues/<id>/`                 | DELETE       |
+ | Création d'un commentaire                 | `/projects/<id>/issues/<id>/comments/`        | POST         |
+ | Liste des commentaires d'une issue        | `/projects/<id>/issues/<id>/comments/`        | GET          |
+ | Détail d'un commentaire                   | `/projects/<id>/issues/<id>/comments/<id>/`   | GET          |
+ | Mise à jour d'un commentaire              | `/projects/<id>/issues/<id>/comments/<id>/`   | PUT ou PATCH |
+ | Suppression d'un commentaire              | `/projects/<id>/issues/<id>/comments/<id>/`   | DELETE       |
 
+ 
 ------------------------------------------
 
 ## <p align="center">I - Setup windows</p>
