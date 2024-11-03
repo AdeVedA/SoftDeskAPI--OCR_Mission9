@@ -52,6 +52,7 @@ class CreateUserAPIView(APIView):
 
     # Permission qui permet à tout utilisateur (authentifié ou non) d'accéder à cette URL
     permission_classes = (AllowAny,)
+    authentication_classes = []  # Désactive l'authentification pour cette vue
 
     def post(self, request):
         # Crée un sérialiseur en passant les données reçues dans la requête (request.data)
