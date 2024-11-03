@@ -1,4 +1,4 @@
-### <p align="center"><bold>SoftDeskAPI - OCR_Mission[9]</bold></p>
+### <p align="center"><bold>OCR_Mission[9]</bold></p>
 <p align="center">=====================================</p>
 <p align="center">
   <picture> 
@@ -14,19 +14,19 @@
 
 SoftDesk API est une API RESTful sécurisée permettant de remonter et suivre des problèmes/enjeux techniques pour des projets collaboratifs. Cette solution B2B permet aux entreprises de :
 
-Créer et gérer des projets (titre, description, type...)
-Attribuer des contributeurs aux projets
-Créer et suivre des "problèmes/enjeux" sur un projet (issues : titre, description, priorité, tag, status, attribution)
-Créer et suivre des commentaires sur les "problèmes/enjeux"
-Gérer les permissions et l'authentification des utilisateurs (par JSON Web Token)
+- Créer et gérer des projets (titre, description, type...)
+- Attribuer des contributeurs aux projets
+- Créer et suivre des "problèmes/enjeux" sur un projet (issues : titre, description, priorité, tag, status, attribution)
+- Créer et suivre des commentaires sur les "problèmes/enjeux"
+- Gérer les permissions et l'authentification des utilisateurs (par JSON Web Token)
 
 Fonctionnalités principales
 
-Authentification JWT (JSON Web Token)
-Gestion des permissions CRUD basée sur les rôles (auteur, contributeur) et sur les choix de consentement des utilisateurs
-Conformité RGPD (consentement, condition d'âge, modification/suppression du compte)
-Pagination des ressources
-Optimisation des requêtes (Green Code)
+- Authentification JWT (JSON Web Token)
+- Gestion des permissions CRUD basée sur les rôles (auteur, contributeur) et sur les choix de consentement des utilisateurs
+- Conformité RGPD (consentement, condition d'âge, modification/suppression du compte)
+- Pagination des ressources
+- Optimisation des requêtes (Green Code)
 
 Points de terminaison de l'API :
 | Fonction                                  | Endpoint                                      | Verbe HTTP   |
@@ -60,7 +60,7 @@ Points de terminaison de l'API :
  | Mise à jour d'un commentaire              | `/projects/<id>/issues/<id>/comments/<id>/`   | PUT ou PATCH |
  | Suppression d'un commentaire              | `/projects/<id>/issues/<id>/comments/<id>/`   | DELETE       |
 
- 
+
 ------------------------------------------
 
 ## <p align="center">I - Setup windows</p>
