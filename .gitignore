@@ -10,6 +10,11 @@ __pycache__/
 .env
 .venv
 env/
+Pipfile
+Pipfile.lock
+
+# Dev tools
+.flake8
 
 # Dev docs
 docs/
