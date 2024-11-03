@@ -8,7 +8,8 @@
 </p>
 
 # <p align="center"><bold>- SoftDeskAPI -</bold></p>
-### <p align="center">- API RESTful sécurisée pour la gestion collaborative de projets et le suivi des problèmes techniques -</p>
+### <p align="center">API RESTful sécurisée pour la gestion collaborative de projets</p>
+### <p align="center">et le suivi des problèmes techniques </p>
 # <p align="center"> I. Description du Projet</p>
 
 SoftDesk API est une API RESTful sécurisée permettant de remonter et suivre des problèmes/enjeux techniques pour des projets collaboratifs. Cette solution B2B permet aux entreprises de :
