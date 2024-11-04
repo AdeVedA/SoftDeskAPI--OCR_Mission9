@@ -10,7 +10,7 @@
 # <p align="center"><bold>- SoftDeskAPI -</bold></p>
 ### <p align="center">API RESTful sécurisée pour la gestion collaborative de projets</p>
 ### <p align="center">et le suivi des problèmes techniques </p>
-# <p align="center"> I. Description du Projet</p>
+## <p align="center"> I. Description du Projet</p>
 
 SoftDesk API est une API RESTful sécurisée permettant de remonter et suivre des problèmes/enjeux techniques pour des projets collaboratifs. Cette solution B2B permet aux entreprises de :
 
@@ -20,7 +20,7 @@ SoftDesk API est une API RESTful sécurisée permettant de remonter et suivre de
 - Créer et suivre des commentaires sur les "problèmes/enjeux"
 - Gérer les permissions et l'authentification des utilisateurs (par JSON Web Token)
 
-Fonctionnalités principales
+#### Fonctionnalités principales
 
 - Authentification JWT (JSON Web Token)
 - Gestion des permissions CRUD basée sur les rôles (auteur, contributeur) et sur les choix de consentement des utilisateurs
@@ -28,42 +28,47 @@ Fonctionnalités principales
 - Pagination des ressources
 - Optimisation des requêtes (Green Code)
 
-Points de terminaison de l'API :
-| Fonction                                  | Endpoint                                      | Verbe HTTP   |
- |-------------------------------------------|-----------------------------------------------|--------------|
- | App users                                |                                               |              |
- | Inscription                              | `users/register/`                             | POST         |
- | Authentification (JWT)                   | `users/login/`                                | POST         |
- | Liste des utilisateurs                    | `/users/`                                     | GET          |
- | Détail de l'utilisateur (self)           | `/users/<id>/`                                | GET          |
- | Mise à jour des informations              | `/users/<id>/`                                | PUT ou PATCH |
- | Suppression du compte utilisateur         | `/users/<id>/`                                | DELETE       |
- | Contact email (conditionnel)              | `/users/<id>/contact_info/`                   | GET          |
- | App projects                              |                                               |              |
- | Création d'un projet                      | `/projects/`                                  | POST         |
- | Liste des projets                         | `/projects/`                                  | GET          |
- | Détail d'un projet                        | `/projects/<id>/`                             | GET          |
- | Mise à jour d'un projet                   | `/projects/<id>/`                             | PUT ou PATCH |
- | Suppression d'un projet                    | `/projects/<id>/`                             | DELETE       |
- | Liste des contributeurs d'un projet       | `/projects/<id>/contributors/`                | GET          |
- | Ajout d'un contributeur à un projet       | `/projects/<id>/contributors/`                | POST         |
- | Détails d’un contributeur à un projet    | `/projects/<id>/contributors/<id>/`           | GET          |
- | Suppression d'un contributeur            | `/projects/<id>/contributors/<id>/`           | DELETE       |
- | Liste des issues d'un projet              | `/projects/<id>/issues/`                      | GET          |
- | Création d'une issue                      | `/projects/<id>/issues/`                     | POST         |
- | Détail d'une issue                        | `/projects/<id>/issues/<id>/`                 | GET          |
- | Mise à jour d'une issue                   | `/projects/<id>/issues/<id>/`                 | PUT ou PATCH |
- | Suppression d'une issue                   | `/projects/<id>/issues/<id>/`                 | DELETE       |
- | Création d'un commentaire                 | `/projects/<id>/issues/<id>/comments/`        | POST         |
- | Liste des commentaires d'une issue        | `/projects/<id>/issues/<id>/comments/`        | GET          |
- | Détail d'un commentaire                   | `/projects/<id>/issues/<id>/comments/<id>/`   | GET          |
- | Mise à jour d'un commentaire              | `/projects/<id>/issues/<id>/comments/<id>/`   | PUT ou PATCH |
- | Suppression d'un commentaire              | `/projects/<id>/issues/<id>/comments/<id>/`   | DELETE       |
+
+
+### Points de terminaison de l'API :
+(à part pour l'Inscription et l'Authentification, le header doit comporter un JWT valide):
+
+ | Fonction                                  | Endpoint                                      | Verbe HTTP  | Body                                     |
+|-------------------------------------------|-----------------------------------------------|-------------|------------------------------------------|
+| ***App users***                           |                                               |             |                                          |
+| Inscription                               | `users/register/`                             | POST        | {"email": "...", "password": "...", "username": "...", "age": "..."} |
+| Authentification (JWT)                    | `users/login/`                                | POST        | {"email": "...", "password": "..."}      |
+| Liste des utilisateurs                    | `/users/`                                     | GET         |                                          |
+| Détail de l'utilisateur                   | `/users/<id>/`                                | GET         |                                          |
+| Mise à jour des informations              | `/users/<id>/`                                | PUT ou PATCH| {"email": "...", "username": "..."}      |
+| Suppression du compte utilisateur         | `/users/<id>/delete_account/`                 | DELETE      |                                          |
+| Confirmation de suppression de compte     | `/users/<id>/confirm_delete_account/`         | POST        | {"delete_account_and_contents": true}    |
+| Contact email (conditionnel)              | `/users/<id>/contact_info/`                   | GET         |                                          |
+| ***App projects***                        |                                               |             |                                          |
+| Création d'un projet                      | `/projects/`                                  | POST        | {"name": "...", "description": "...", "type": "..."} |
+| Liste des projets                         | `/projects/`                                  | GET         |                                          |
+| Détail d'un projet                        | `/projects/<id>/`                             | GET         |                                          |
+| Mise à jour d'un projet                   | `/projects/<id>/`                             | PUT ou PATCH| {"name": "...", "description": "..."}    |
+| Suppression d'un projet                   | `/projects/<id>/`                             | DELETE      |                                          |
+| Liste des contributeurs d'un projet       | `/projects/<id>/contributors/`                | GET         |                                          |
+| Ajout d'un contributeur à un projet       | `/projects/<id>/contributors/`                | POST        | {"user": "<user_id>", "author": false}   |
+| Détails d’un contributeur à un projet     | `/projects/<id>/contributors/<id>/`           | GET         |                                          |
+| Suppression d'un contributeur             | `/projects/<id>/contributors/<id>/`           | DELETE      |                                          |
+| Liste des issues d'un projet              | `/projects/<id>/issues/`                      | GET         |                                          |
+| Création d'une issue                      | `/projects/<id>/issues/`                      | POST        | {"name": "...", "description": "...", "priority": "...", "tag": "...", "status": "..."} |
+| Détail d'une issue                        | `/projects/<id>/issues/<id>/`                 | GET         |                                          |
+| Mise à jour d'une issue                   | `/projects/<id>/issues/<id>/`                 | PUT ou PATCH| {"name": "...", "description": "..."}    |
+| Suppression d'une issue                   | `/projects/<id>/issues/<id>/`                 | DELETE      |                                          |
+| Création d'un commentaire                 | `/projects/<id>/issues/<id>/comments/`        | POST        | {"description": "..."}                   |
+| Liste des commentaires d'une issue        | `/projects/<id>/issues/<id>/comments/`        | GET         |                                          |
+| Détail d'un commentaire                   | `/projects/<id>/issues/<id>/comments/<id>/`   | GET         |                                          |
+| Mise à jour d'un commentaire              | `/projects/<id>/issues/<id>/comments/<id>/`   | PUT ou PATCH| {"description": "..."}                   |
+| Suppression d'un commentaire              | `/projects/<id>/issues/<id>/comments/<id>/`   | DELETE      |                                          |
 
 
 ------------------------------------------
 
-## <p align="center">I - Setup windows</p>
+## <p align="center">II - Setup windows</p>
 
 #### ( si [Git](https://github.com/git-for-windows/git/releases/download/v2.46.2.windows.1/Git-2.46.2-64-bit.exe) et [python 3.12+](https://www.python.org/ftp/python/3.12.6/python-3.12.6-amd64.exe) ne sont pas installés, commencez par l'annexe 1 !)
 ------------------------------------------
@@ -122,7 +127,7 @@ puis
 -------------------------
 -------------------------
 
-## <p align="center">II - Setup Linux/Mac</p>
+## <p align="center">III - Setup Linux/Mac</p>
 
 #### ( si **[Git](https://sourceforge.net/projects/git-osx-installer/files/git-2.23.0-intel-universal-mavericks.dmg/download?use_mirror=autoselect)** et **[python](https://www.python.org/ftp/python/3.12.6/python-3.12.6-macos11.pkg)** ne sont pas installés, commencez par l'annexe 1 !)
 

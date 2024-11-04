@@ -20,10 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: keep the secret key used in production secret
+# en prod : à mettre dans les variables d'environnements
 SECRET_KEY = "django-insecure-)ex*o@*@losq4&k+zm!)qlk(^tp8qb_h&tt2i#pgoo!r#a6i6l"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# en prod : à mettre sur false
 DEBUG = True
 
 # Aucun domaine à autoriser en développement, tant que les client ne determine aucune adresse du site.
@@ -87,6 +89,14 @@ DATABASES = {
     }
 }
 
+# Security Settings
+if not DEBUG:  # Activer uniquement en production
+    SECURE_SSL_REDIRECT = True  # Redirige HTTP vers HTTPS
+    SESSION_COOKIE_SECURE = True  # Utilise HTTPS pour les cookies de session
+    CSRF_COOKIE_SECURE = True  # Utilise HTTPS pour les cookies CSRF
+    SECURE_BROWSER_XSS_FILTER = True  # Active le filtre XSS du navigateur
+    SECURE_CONTENT_TYPE_NOSNIFF = True  # Empêche le navigateur de deviner le type MIME
+    X_FRAME_OPTIONS = "DENY"  # Empêche l'intégration de pages dans des iframes (protection contre clickjacking si interface visuelle)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

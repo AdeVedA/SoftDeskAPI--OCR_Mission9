@@ -46,6 +46,55 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(response_data)
 
+    @action(detail=True, methods=["delete"])
+    def delete_account(self, request, pk=None):
+        """
+        Vérifie si l'utilisateur est auteur de contenus avant de supprimer le compte.
+        """
+        user = self.get_object()
+
+        # Vérifier si l'utilisateur a des contenus liés
+        has_authored_content = (
+            user.project_author.exists() or user.issue_author.exists() or user.comment_author.exists()
+        )
+
+        # Si il y en a, demander
+        if has_authored_content:
+            return Response(
+                {
+                    "detail": "You have authored contents.",
+                    "options": {
+                        "delete_account_and_contents": "Delete your account and all authored contents.",
+                        "cancel": "Cancel deletion. Remove your contents manually before trying again.",
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        user.delete()
+        return Response({"detail": "User account deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=["post"])
+    def confirm_delete_account(self, request, pk=None):
+        """
+        Supprime le compte utilisateur et tous les contenus associés.
+        """
+        user = self.get_object()
+        if "delete_account_and_contents" in request.data:
+            user.project_author.all().delete()
+            user.issue_author.all().delete()
+            user.comment_author.all().delete()
+            user.delete()
+            return Response(
+                {"detail": "User account and all authored contents deleted successfully."},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+
+        return Response(
+            {"detail": "Deletion cancelled. Please manage your contents before deleting the account."},
+            status=status.HTTP_200_OK,
+        )
+
 
 class CreateUserAPIView(APIView):
     """Cette classe gère la création d'un utilisateur via l'API"""
