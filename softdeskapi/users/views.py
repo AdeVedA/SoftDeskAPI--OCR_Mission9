@@ -29,6 +29,11 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return self.queryset
 
+    def destroy(self, request, *args, **kwargs):
+        return Response(
+            {"detail": "Use /delete_account/ endpoint to delete user."}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
     @action(detail=True, methods=["get"])
     def contact_info(self, request, pk=None):
         """
