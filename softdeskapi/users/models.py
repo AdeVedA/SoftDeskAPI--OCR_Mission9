@@ -1,6 +1,4 @@
 # users/models.py
-from __future__ import unicode_literals
-
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
@@ -8,14 +6,17 @@ from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
-    """
-    Creates and saves a User with the given email,and password.
-    """
+    """Gestionnaire de modèle personnalisé pour créer et enregistrer des utilisateurs."""
 
     def _create_user(self, email, password, **extra_fields):
+        """Crée et enregistre un utilisateur avec l'email et le mot de passe donnés.
+        Cette méthode privée est utilisée par create_user et create_superuser.
+        """
         if not email:
             raise ValueError("L'Email doit être renseigné")
         try:
+            # s'assurer avec une transaction atomique que les opérations de ce bloc
+            # ne soient effectives que si elles réussissent toutes
             with transaction.atomic():
                 user = self.model(email=email, **extra_fields)
                 user.set_password(password)
@@ -36,10 +37,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """
-    An abstract base class implementing a fully featured User model with
-    admin-compliant permissions.
-    """
+    """modèle d'utilisateur personnalisé avec des champs supplémentaires."""
 
     username = models.CharField(max_length=30, blank=True)
     age = models.PositiveSmallIntegerField(validators=[MinValueValidator(18), MaxValueValidator(120)])
@@ -52,4 +50,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["username", "age"]
 
     def save(self, *args, **kwargs):
+        """Enregistre l'utilisateur dans la base de données."""
         super().save(*args, **kwargs)

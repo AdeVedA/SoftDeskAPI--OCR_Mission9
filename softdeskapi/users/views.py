@@ -12,9 +12,7 @@ from .serializers import CustomTokenObtainPairSerializer, UserListSerializer, Us
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    """
-    Vue pour gérer les opérations CRUD sur le modèle User (pour le RGPD...).
-    """
+    """Vue pour gérer les opérations CRUD sur le modèle User (pour le RGPD...)."""
 
     queryset = User.objects.all().order_by("id")  # ordonner les users par id pour une pagination cohérente
     permission_classes = [IsAuthenticated]
@@ -36,9 +34,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def contact_info(self, request, pk=None):
-        """
-        Renvoie l'email et les projets si les conditions `can_be_contacted` et `can_data_be_shared` sont remplies.
-        """
+        """Renvoie l'email et les projets si conditions `can_be_contacted` et `can_data_be_shared` sont remplies."""
         user = self.get_object()
         response_data = {}
 
@@ -53,9 +49,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["delete"])
     def delete_account(self, request, pk=None):
-        """
-        Vérifie si l'utilisateur est auteur de contenus avant de supprimer le compte.
-        """
+        """Vérifie si l'utilisateur est auteur de contenus avant de supprimer le compte."""
         user = self.get_object()
 
         # Vérifier si l'utilisateur a des contenus liés
@@ -81,9 +75,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def confirm_delete_account(self, request, pk=None):
-        """
-        Supprime le compte utilisateur et tous les contenus associés.
-        """
+        """Supprime le compte utilisateur et tous les contenus associés."""
         user = self.get_object()
         if "delete_account_and_contents" in request.data:
             user.project_author.all().delete()

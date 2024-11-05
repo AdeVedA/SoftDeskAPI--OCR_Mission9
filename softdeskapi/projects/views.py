@@ -10,18 +10,15 @@ from .serializers import CommentSerializer, ContributorSerializer, IssueSerializ
 
 
 class ProjectPagination(PageNumberPagination):
-    """
-    Pagination personnalisée pour limiter le nombre d'éléments par page.
-    """
+    """Pagination personnalisée pour limiter le nombre d'éléments par page."""
 
     page_size = 10  # nombre maximum d'éléments par page
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet pour gérer les opérations CRUD sur les projets.
-    Seuls les auteurs peuvent modifier ou supprimer les projets, mais tous les utilisateurs authentifiés
-    peuvent lire et créer des projets.
+    """ViewSet pour gérer les opérations CRUD sur les projets.
+    Seuls les auteurs peuvent modifier ou supprimer les projets,
+    mais tous les utilisateurs authentifiés peuvent lire et créer des projets.
     """
 
     serializer_class = ProjectSerializer
@@ -29,8 +26,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectPagination
 
     def get_queryset(self):
-        """
-        Récupère pour afficher tous les projets avec leurs auteurs
+        """Récupère pour afficher tous les projets avec leurs auteurs
         en évitant les requêtes supplémentaires grâce à select_related.
         """
         return Project.objects.select_related("author").all()
@@ -48,8 +44,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
 
 class ContributorViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet pour gérer les contributeurs d'un projet.
+    """ViewSet pour gérer les contributeurs d'un projet.
     Seuls les utilisateurs authentifiés peuvent ajouter et lire les contributeurs d'un projet.
     """
 
@@ -58,16 +53,14 @@ class ContributorViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectPagination
 
     def get_queryset(self):
-        """
-        Récupère tous les contributeurs pour un projet donné. Filtre les contributeurs
-        en fonction de l'ID du projet spécifié dans l'URL.
+        """Récupère tous les contributeurs pour un projet donné.
+        Filtre les contributeurs en fonction de l'ID du projet spécifié dans l'URL.
         """
         # Récupère les contributeurs associés à un projet spécifique
         return Contributor.objects.select_related("user", "project").filter(project__id=self.kwargs["project"])
 
     def perform_create(self, serializer):
-        """
-        Ajoute un contributeur à un projet. Vérifie d'abord que l'utilisateur actuel
+        """Ajoute un contributeur à un projet. Vérifie d'abord que l'utilisateur actuel
         n'est pas déjà contributeur. Lève une exception si l'utilisateur est déjà dans le projet.
         """
         # Récupère le projet avec l'ID passé dans les paramètres d'URL
@@ -84,10 +77,9 @@ class ContributorViewSet(viewsets.ModelViewSet):
 
 
 class IssueViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet pour gérer les issues dans un projet.
-    Seuls les auteurs d'une issue peuvent la modifier ou la supprimer, mais tous les utilisateurs authentifiés
-    peuvent lire et créer des issues.
+    """ViewSet pour gérer les issues dans un projet.
+    Seuls les auteurs d'une issue peuvent la modifier ou la supprimer,
+    mais tous les utilisateurs authentifiés peuvent lire et créer des issues.
     """
 
     serializer_class = IssueSerializer
@@ -95,16 +87,14 @@ class IssueViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectPagination
 
     def get_queryset(self):
-        """
-        Récupère toutes les issues pour un projet donné. Filtre les issues en fonction
-        de l'ID du projet spécifié dans l'URL.
+        """Récupère toutes les issues pour un projet donné.
+        Filtre les issues en fonction de l'ID du projet spécifié dans l'URL.
         """
         return Issue.objects.select_related("author", "project").filter(project__id=self.kwargs["project"])
 
     def get_serializer_context(self):
-        """
-        Ajoute le projet dans le contexte du sérialiseur pour permettre une liaison facile
-        entre une nouvelle issue et le projet auquel elle appartient.
+        """Ajoute le projet dans le contexte du sérialiseur pour permettre
+        une liaison facile entre une nouvelle issue et le projet auquel elle appartient.
         """
         context = super().get_serializer_context()
         # Ajoute le projet correspondant au contexte
@@ -113,8 +103,7 @@ class IssueViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet pour gérer les commentaires sur une issue spécifique.
+    """ViewSet pour gérer les commentaires sur une issue spécifique.
     Seuls les auteurs d'un commentaire peuvent le modifier ou le supprimer,
     mais tous les utilisateurs authentifiés peuvent lire et créer des commentaires.
     """
@@ -124,8 +113,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectPagination
 
     def get_queryset(self):
-        """
-        Récupère tous les commentaires pour une issue donnée dans un projet.
+        """Récupère tous les commentaires pour une issue donnée dans un projet.
         Filtre les commentaires en fonction de l'ID de l'issue et du projet spécifiés dans l'URL.
         """
         return Comment.objects.select_related("author", "issue").filter(
@@ -133,9 +121,8 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
-        """
-        Crée un commentaire lié à une issue spécifique. Vérifie que l'issue appartient
-        bien au projet spécifié avant de créer le commentaire.
+        """Crée un commentaire lié à une issue spécifique. Vérifie que l'issue
+        appartient bien au projet spécifié avant de créer le commentaire.
         """
         # Vérifie que l'issue appartient bien au projet
         try:

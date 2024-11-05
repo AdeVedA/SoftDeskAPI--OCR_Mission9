@@ -5,9 +5,7 @@ from django.db import models
 
 
 class Project(models.Model):
-    """modèle pour représenter un projet
-    (author, name, description, type, created_time)
-    """
+    """modèle pour représenter un projet (author, name, description, type, created_time)"""
 
     TYPE_CHOICES = [
         ("back-end", "Back End"),
@@ -27,8 +25,7 @@ class Project(models.Model):
 
 
 class Contributor(models.Model):
-    """modèle pour représenter un contributeur,
-    classe de liaison many-to-many entre User et Project
+    """modèle pour représenter un contributeur, classe de liaison many-to-many entre User et Project
     (user, project, role=CONTRIBUTOR(default), AUTHOR)
     """
 
@@ -46,8 +43,7 @@ class Contributor(models.Model):
 
 class Issue(models.Model):
     """modèle pour représenter une tâche/difficulté/fonctionnalité
-    (project, author, name, description,
-    priority, tag, status, attribution, created_time)
+    (project, author, name, description, priority, tag, status, attribution, created_time)
     """
 
     PRIORITY_CHOICES = [("Low", "Low"), ("Medium", "Medium"), ("High", "High")]
@@ -89,9 +85,7 @@ class Issue(models.Model):
 
 
 class Comment(models.Model):
-    """modèle pour représenter un commentaire
-    (issue, author, description, uuid, created_time)
-    """
+    """modèle pour représenter un commentaire (issue, author, description, uuid, created_time)"""
 
     issue = models.ForeignKey(to=Issue, on_delete=models.CASCADE)
     author = models.ForeignKey(

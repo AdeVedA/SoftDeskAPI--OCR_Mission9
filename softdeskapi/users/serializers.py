@@ -6,6 +6,7 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Serialisation/déserialisation pour la création/mise à jour des instances du modèle User"""
 
     date_joined = serializers.ReadOnlyField()
     can_be_contacted = serializers.BooleanField(default=True)
@@ -23,6 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
             "can_be_contacted",
             "can_data_be_shared",
         )
+        # mot de passe jamais renvoyé dans les réponses de l'API
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
@@ -40,6 +42,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserListSerializer(serializers.ModelSerializer):
+    """gérer l'affichage par liste des utilisateurs avec respect des choix de confidentialité"""
+
     email = serializers.SerializerMethodField()
     projects_contributed = serializers.SerializerMethodField()
 
@@ -60,6 +64,8 @@ class UserListSerializer(serializers.ModelSerializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """gérer la validation et la génération des tokens JWT"""
+
     def validate(self, attrs):
         try:
             # Authentifie l'utilisateur via l'email

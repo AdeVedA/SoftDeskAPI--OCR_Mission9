@@ -5,6 +5,9 @@ from .models import Comment, Contributor, Issue, Project
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    """Sérialiseur pour le modèle Project."""
+
+    # Champ caché pour l'auteur du projet, défini par défaut à l'utilisateur actuel.
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -13,13 +16,15 @@ class ProjectSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "author"]
 
     def create(self, validated_data):
-        # Création d'un projet avec ajout automatique de l'auteur comme contributeur
+        """Création d'un projet avec ajout automatique de l'auteur comme contributeur"""
         project = Project.objects.create(**validated_data)
         Contributor.objects.create(user=self.context["request"].user, project=project, author=True)
         return project
 
 
 class ContributorSerializer(serializers.ModelSerializer):
+    """Sérialiseur pour le modèle Contributor."""
+
     # Projet en lecture seule pour éviter d'avoir à renseigner dans le body ce qui est déjà dans l'url
     project = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -28,6 +33,7 @@ class ContributorSerializer(serializers.ModelSerializer):
         fields = ["id", "user", "project", "author"]
 
     def validate(self, data):
+        """Valide que le contributeur n'est pas déjà dans le projet."""
         # récupérer le projet par l'url
         project = self.context["view"].kwargs.get(self.context["view"].lookup_url_kwarg)
         # Vérifie que le contributeur n'est pas déjà dans le projet
@@ -37,7 +43,11 @@ class ContributorSerializer(serializers.ModelSerializer):
 
 
 class IssueSerializer(serializers.ModelSerializer):
+    """Sérialiseur pour le modèle Issue."""
+
+    # Champ caché pour l'auteur de l'issue, défini par défaut à l'utilisateur actuel.
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # Champ pour le projet, non requis car défini par le contexte.
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), required=False)
 
     class Meta:
@@ -56,15 +66,14 @@ class IssueSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        # Associe l'issue au projet en contexte
+        """Associe l'issue au projet en contexte"""
         project_id = self.context["view"].kwargs.get("project")
         project = get_object_or_404(Project, id=project_id)
         validated_data["project"] = project
         return super().create(validated_data)
 
     def validate(self, data):
-        # Validation pour s'assurer que
-        # le contributeur assigné est bien un contributeur du projet.
+        """Validation pour s'assurer que le contributeur assigné est bien un contributeur du projet."""
         project_id = self.context["view"].kwargs.get("project")
         if not Contributor.objects.filter(project_id=project_id, user=data["attribution"]).exists():
             raise serializers.ValidationError("L'utilisateur assigné doit être un contributeur de ce projet.")
@@ -72,6 +81,9 @@ class IssueSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    """Sérialiseur pour le modèle Comment."""
+
+    # Champ caché pour l'auteur du commentaire, défini par défaut à l'utilisateur actuel.
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
