@@ -133,7 +133,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         user_details = {
             "username": user.username,
             "email": user.email,
-            "age": user.age,
             "date_joined": user.date_joined,
         }
         # Retourne la réponse avec le token d'accès, le token de rafraîchissement,

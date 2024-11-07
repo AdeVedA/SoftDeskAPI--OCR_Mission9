@@ -67,6 +67,8 @@ class IssueSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Associe l'issue au projet en contexte"""
+        # on accède à l'id du projet par les paramètres d'URL dans le contexte
+        # fourni par la vue (get_serializer_context)
         project_id = self.context["view"].kwargs.get("project")
         project = get_object_or_404(Project, id=project_id)
         validated_data["project"] = project
@@ -83,7 +85,7 @@ class IssueSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     """Sérialiseur pour le modèle Comment."""
 
-    # Champ caché pour l'auteur du commentaire, défini par défaut à l'utilisateur actuel.
+    # Champ caché (pas nécessaire de l'inclure pour création de commentaire) défini par défaut à l'utilisateur actuel
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:

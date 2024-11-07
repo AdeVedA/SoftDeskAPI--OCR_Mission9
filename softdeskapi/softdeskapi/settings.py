@@ -148,8 +148,8 @@ REST_FRAMEWORK = {
 
 # configure our tokens and how they are generated
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(weeks=2),  # Durée de validité du token d'accès
-    "REFRESH_TOKEN_LIFETIME": timedelta(weeks=2),  # Durée de validité du token de rafraîchissement
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # Durée de validité du token d'accès
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Durée de validité du token de rafraîchissement
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
