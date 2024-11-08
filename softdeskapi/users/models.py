@@ -6,7 +6,7 @@ from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
-    """Gestionnaire de modèle personnalisé pour créer et enregistrer des utilisateurs."""
+    """Gestionnaire/Manager de modèle personnalisé pour créer et enregistrer des utilisateurs."""
 
     def _create_user(self, email, password, **extra_fields):
         """Crée et enregistre un utilisateur avec l'email et le mot de passe donnés.
@@ -45,6 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     can_be_contacted = models.BooleanField(default=True)
     can_data_be_shared = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
+    # définition d'un manager personnalisé pour le modèle User
     objects = UserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "age"]

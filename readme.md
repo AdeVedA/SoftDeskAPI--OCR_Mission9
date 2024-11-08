@@ -51,7 +51,7 @@ SoftDesk API est une API RESTful sécurisée permettant de remonter et suivre de
 | Mise à jour d'un projet                   | `/projects/<id>/`                             | PUT ou PATCH| {"name": "...", "description": "..."}    |
 | Suppression d'un projet                   | `/projects/<id>/`                             | DELETE      |                                          |
 | Liste des contributeurs d'un projet       | `/projects/<id>/contributors/`                | GET         |                                          |
-| Ajout d'un contributeur à un projet       | `/projects/<id>/contributors/`                | POST        | {"user": "<user_id>", "author": false}   |
+| Ajout d'un contributeur à un projet       | `/projects/<id>/contributors/`                | POST        | {"user": "<user_id>"}   |
 | Détails d’un contributeur à un projet     | `/projects/<id>/contributors/<id>/`           | GET         |                                          |
 | Suppression d'un contributeur             | `/projects/<id>/contributors/<id>/`           | DELETE      |                                          |
 | Liste des issues d'un projet              | `/projects/<id>/issues/`                      | GET         |                                          |
@@ -59,7 +59,7 @@ SoftDesk API est une API RESTful sécurisée permettant de remonter et suivre de
 | Détail d'une issue                        | `/projects/<id>/issues/<id>/`                 | GET         |                                          |
 | Mise à jour d'une issue                   | `/projects/<id>/issues/<id>/`                 | PUT ou PATCH| {"name": "...", "description": "..."}    |
 | Suppression d'une issue                   | `/projects/<id>/issues/<id>/`                 | DELETE      |                                          |
-| Création d'un commentaire                 | `/projects/<id>/issues/<id>/comments/`        | POST        | {"description": "..."}                   |
+| Création d'un commentaire                 | `/projects/<id>/issues/<id>/comments/`        | POST        | {"issue": "...", "description": "..."}                   |
 | Liste des commentaires d'une issue        | `/projects/<id>/issues/<id>/comments/`        | GET         |                                          |
 | Détail d'un commentaire                   | `/projects/<id>/issues/<id>/comments/<id>/`   | GET         |                                          |
 | Mise à jour d'un commentaire              | `/projects/<id>/issues/<id>/comments/<id>/`   | PUT ou PATCH| {"description": "..."}                   |
