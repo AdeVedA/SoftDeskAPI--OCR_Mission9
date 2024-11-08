@@ -39,7 +39,7 @@ Cette application collecte les données personnelles nécessaires pour permettre
 - Les données saisies volontairement dans le cadre de l’utilisation de l’application (par exemple, descriptions de projets et de problèmes, commentaires)
 
 Aucune donnée personnelle (âge, adresse email, données saisies), sauf obligation légale, n’est partagée avec des tiers sans consentement explicite (les contributeurs de votre projet peuvent y accéder bien entendu, et vous pouvez consulter vos contributions et choisir de modifier ou supprimer vos contributions, comme votre compte).
-Vous pouvez vous opposer à l'inscription (POST users/register/) ou par modification de votre compte utilisateur (PATCH users/<votre ID>/) au partage de votre email avec "can_be_contacted": "False" ou au partage de votre contribution à des projets avec "can_data_be_shared": "False".
+Vous pouvez vous opposer à l'inscription (POST users/register/) ou par modification de votre compte utilisateur (PATCH users/\<votre ID>/) au partage de votre email avec dans le body "can_be_contacted": "False" ou au partage de votre contribution à des projets avec "can_data_be_shared": "False".
 
 ### Points de terminaison de l'API :
 (à part pour l'Inscription et l'Authentification, le header doit comporter un JWT valide):
