@@ -26,10 +26,21 @@ class ProjectViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectPagination
 
     def get_queryset(self):
-        """Récupère pour afficher tous les projets avec leurs auteurs
-        en évitant les requêtes supplémentaires grâce à select_related.
         """
-        return Project.objects.select_related("author").all()
+        Récupère la liste des projets auxquels l'utilisateur est contributeur.
+        Si un ID de projet est spécifié dans l'URL, vérifie que l'utilisateur est contributeur aussi.
+        """
+        # Récupérer l'ID du projet depuis les paramètres de l'URL ("pk" pour les routes détails project/1/)
+        project_id = self.kwargs.get("pk")
+
+        # Si un ID de projet est spécifié, l'utilisateur doit être contributeur du projet
+        if project_id:
+            if Contributor.objects.filter(project_id=project_id, user=self.request.user).exists():
+                return Project.objects.filter(id=project_id).select_related("author")
+            raise PermissionDenied("Vous devez être contributeur de ce projet pour accéder à ses détails.")
+
+        # Si aucun ID spécifique n'est précisé, renvoie tous les projets auxquels l'utilisateur est contributeur
+        return Project.objects.filter(contributed_by__user=self.request.user).select_related("author")
 
     def perform_create(self, serializer):
         """
@@ -87,10 +98,19 @@ class IssueViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectPagination
 
     def get_queryset(self):
-        """Récupère toutes les issues pour un projet donné.
-        Filtre les issues en fonction de l'ID du projet spécifié dans l'URL.
+        """Récupère toutes les issues pour un projet donné auquel l'utilisateur est contributeur.
+        Filtre les issues en fonction de l'ID du projet spécifié dans l'URL et de l'appartenance
+        de l'utilisateur au projet.
         """
-        return Issue.objects.select_related("author", "project").filter(project__id=self.kwargs["project"])
+        # Récupère l'ID du projet depuis les paramètres de l'URL
+        project_id = self.kwargs.get("project")
+
+        # Vérifie si l'utilisateur est contributeur du projet
+        if Contributor.objects.filter(project_id=project_id, user=self.request.user).exists():
+            return Issue.objects.select_related("author", "project").filter(project__id=project_id)
+
+        # Si l'utilisateur n'est pas contributeur, lève une exception avec un message explicatif
+        raise PermissionDenied("Vous devez être contributeur de ce projet pour accéder à ses issues.")
 
     def get_serializer_context(self):
         """Ajoute le projet dans le contexte du sérialiseur pour permettre
@@ -113,12 +133,20 @@ class CommentViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectPagination
 
     def get_queryset(self):
-        """Récupère tous les commentaires pour une issue donnée dans un projet.
-        Filtre les commentaires en fonction de l'ID de l'issue et du projet spécifiés dans l'URL.
+        """Récupère tous les commentaires pour une issue donnée dans un projet auquel l'utilisateur est contributeur.
+        Si l'utilisateur n'est pas contributeur, une exception est levée pour indiquer le manque de permissions.
         """
-        return Comment.objects.select_related("author", "issue").filter(
-            issue__id=self.kwargs["issue"], issue__project__id=self.kwargs["project"]
-        )
+        project_id = self.kwargs.get("project")
+        issue_id = self.kwargs.get("issue")
+
+        # Vérifie si l'utilisateur est contributeur du projet
+        if Contributor.objects.filter(project_id=project_id, user=self.request.user).exists():
+            return Comment.objects.select_related("author", "issue").filter(
+                issue__id=issue_id, issue__project__id=project_id
+            )
+
+        # Si l'utilisateur n'est pas contributeur, lève une exception avec un message explicatif
+        raise PermissionDenied("Vous devez être contributeur de ce projet pour accéder à ses commentaires.")
 
     def perform_create(self, serializer):
         """Crée un commentaire lié à une issue spécifique. Vérifie que l'issue
