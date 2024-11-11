@@ -7,19 +7,12 @@ from .models import Comment, Contributor, Issue, Project
 class ProjectSerializer(serializers.ModelSerializer):
     """Sérialiseur pour le modèle Project."""
 
-    # Champ caché pour l'auteur du projet, défini par défaut à l'utilisateur actuel.
-    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Project
         fields = ["id", "author", "name", "description", "type", "created_time"]
         read_only_fields = ["id", "author"]
-
-    def create(self, validated_data):
-        """Création d'un projet avec ajout automatique de l'auteur comme contributeur"""
-        project = Project.objects.create(**validated_data)
-        Contributor.objects.create(user=self.context["request"].user, project=project, author=True)
-        return project
 
 
 class ContributorSerializer(serializers.ModelSerializer):

@@ -5,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Comment, Contributor, Issue, Project
-from .permissions import IsAuthorOrReadOnly
+from .permissions import IsAuthorOrReadOnly, IsContributor
 from .serializers import CommentSerializer, ContributorSerializer, IssueSerializer, ProjectSerializer
 
 
@@ -22,25 +22,14 @@ class ProjectViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ProjectSerializer
-    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+    permission_classes = [IsAuthenticated, IsContributor, IsAuthorOrReadOnly]
     pagination_class = ProjectPagination
 
     def get_queryset(self):
+        """Récupère pour afficher tous les projets dont l'utilisateur est contributeur
+        avec leurs auteurs en évitant les requêtes supplémentaires grâce à select_related.
         """
-        Récupère la liste des projets auxquels l'utilisateur est contributeur.
-        Si un ID de projet est spécifié dans l'URL, vérifie que l'utilisateur est contributeur aussi.
-        """
-        # Récupérer l'ID du projet depuis les paramètres de l'URL ("pk" pour les routes détails project/1/)
-        project_id = self.kwargs.get("pk")
-
-        # Si un ID de projet est spécifié, l'utilisateur doit être contributeur du projet
-        if project_id:
-            if Contributor.objects.filter(project_id=project_id, user=self.request.user).exists():
-                return Project.objects.filter(id=project_id).select_related("author")
-            raise PermissionDenied("Vous devez être contributeur de ce projet pour accéder à ses détails.")
-
-        # Si aucun ID spécifique n'est précisé, renvoie tous les projets auxquels l'utilisateur est contributeur
-        return Project.objects.filter(contributed_by__user=self.request.user).select_related("author")
+        return Project.objects.select_related("author").all().filter(contributed_by__user=self.request.user)
 
     def perform_create(self, serializer):
         """
@@ -50,8 +39,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         # Sauvegarde du projet avec l'utilisateur actuel comme auteur
         project = serializer.save(author=self.request.user)
         # Ajoute l'utilisateur comme contributeur, s'il ne l'est pas déjà
-        if not Contributor.objects.filter(user=self.request.user, project=project).exists():
-            Contributor.objects.create(user=self.request.user, project=project, author=True)
+        Contributor.objects.get_or_create(user=self.request.user, project=project, defaults={"author": True})
 
 
 class ContributorViewSet(viewsets.ModelViewSet):
@@ -94,23 +82,14 @@ class IssueViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = IssueSerializer
-    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+    permission_classes = [IsAuthenticated, IsContributor, IsAuthorOrReadOnly]
     pagination_class = ProjectPagination
 
     def get_queryset(self):
-        """Récupère toutes les issues pour un projet donné auquel l'utilisateur est contributeur.
-        Filtre les issues en fonction de l'ID du projet spécifié dans l'URL et de l'appartenance
-        de l'utilisateur au projet.
+        """Récupère toutes les issues pour un projet donné.
+        Filtre les issues en fonction de l'ID du projet spécifié dans l'URL.
         """
-        # Récupère l'ID du projet depuis les paramètres de l'URL
-        project_id = self.kwargs.get("project")
-
-        # Vérifie si l'utilisateur est contributeur du projet
-        if Contributor.objects.filter(project_id=project_id, user=self.request.user).exists():
-            return Issue.objects.select_related("author", "project").filter(project__id=project_id)
-
-        # Si l'utilisateur n'est pas contributeur, lève une exception avec un message explicatif
-        raise PermissionDenied("Vous devez être contributeur de ce projet pour accéder à ses issues.")
+        return Issue.objects.select_related("author", "project").filter(project__id=self.kwargs["project"])
 
     def get_serializer_context(self):
         """Ajoute le projet dans le contexte du sérialiseur pour permettre
@@ -129,24 +108,16 @@ class CommentViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+    permission_classes = [IsAuthenticated, IsContributor, IsAuthorOrReadOnly]
     pagination_class = ProjectPagination
 
     def get_queryset(self):
-        """Récupère tous les commentaires pour une issue donnée dans un projet auquel l'utilisateur est contributeur.
-        Si l'utilisateur n'est pas contributeur, une exception est levée pour indiquer le manque de permissions.
+        """Récupère tous les commentaires pour une issue donnée dans un projet.
+        Filtre les commentaires en fonction de l'ID de l'issue et du projet spécifiés dans l'URL.
         """
-        project_id = self.kwargs.get("project")
-        issue_id = self.kwargs.get("issue")
-
-        # Vérifie si l'utilisateur est contributeur du projet
-        if Contributor.objects.filter(project_id=project_id, user=self.request.user).exists():
-            return Comment.objects.select_related("author", "issue").filter(
-                issue__id=issue_id, issue__project__id=project_id
-            )
-
-        # Si l'utilisateur n'est pas contributeur, lève une exception avec un message explicatif
-        raise PermissionDenied("Vous devez être contributeur de ce projet pour accéder à ses commentaires.")
+        return Comment.objects.select_related("author", "issue").filter(
+            issue__id=self.kwargs["issue"], issue__project__id=self.kwargs["project"]
+        )
 
     def perform_create(self, serializer):
         """Crée un commentaire lié à une issue spécifique. Vérifie que l'issue
