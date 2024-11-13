@@ -42,7 +42,7 @@ class UserViewSet(viewsets.ModelViewSet):
             response_data["email"] = user.email
 
         if user.can_data_be_shared:
-            projects = Project.objects.filter(contributors__user=user)
+            projects = Project.objects.filter(contributed_by__user=user)
             response_data["projects"] = [{"id": project.id, "name": project.name} for project in projects]
 
         return Response(response_data)

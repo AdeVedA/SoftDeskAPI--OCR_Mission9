@@ -29,7 +29,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         """Récupère pour afficher tous les projets dont l'utilisateur est contributeur
         avec leurs auteurs en évitant les requêtes supplémentaires grâce à select_related.
         """
-        return Project.objects.select_related("author").all().filter(contributed_by__user=self.request.user)
+        return Project.objects.select_related("author").filter(contributed_by__user=self.request.user)
 
     def perform_create(self, serializer):
         """

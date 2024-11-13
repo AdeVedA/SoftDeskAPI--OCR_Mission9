@@ -68,15 +68,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
         try:
-            # Authentifie l'utilisateur via l'email
+            # Rechercher l'utilisateur via l'email fourni
             user = User.objects.get(email=attrs["email"])
         except User.DoesNotExist:
-            raise serializers.ValidationError("Email non valide.")
+            # Erreur générique pour des raisons de sécurité
+            raise serializers.ValidationError("Identifiants incorrects")
 
+        # vérification du mot de passe
         if not user.check_password(attrs["password"]):
-            raise serializers.ValidationError("Mot de passe incorrect.")
+            raise serializers.ValidationError("Identifiants incorrects")
 
+        # Génération des tokens via la méthode parent
         data = super().validate(attrs)
+
+        # Ajout des détails utilisateur dans la réponse
         data["user_details"] = {
             "username": user.username,
             "email": user.email,
